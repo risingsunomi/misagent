@@ -74,7 +74,11 @@ def main():
     except json.JSONDecodeError:
         print("json failed")
         # add the message about reply format to remind the AI
-        chat_history.append(f"Please take a breath. You are replying in the wrong format. {system_messages[0]}")
+        chat_history.append(
+            HumanMessage(
+                content=f"Please take a breath. You are replying in the wrong format. {system_messages[0]}"
+            )
+        )
         pass
 
     while True:
@@ -94,7 +98,11 @@ def main():
             # print(f"chatjson: {chatjson}")
         except json.JSONDecodeError:
             print("json failed")
-            chat_history.append(f"Please take a breath. You are replying in the wrong format. {system_messages[0]}")
+            chat_history.append(
+                HumanMessage(
+                    content=f"Please take a breath. You are replying in the wrong format. {system_messages[0]}"
+                )
+            )
             pass
 
 
