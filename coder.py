@@ -17,9 +17,29 @@ def main():
     chat_model = ChatOllama(
         model="mistral",
         callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
+        temperature=0.3
     )
 
-    messages = [
+    chat_history = []
+
+    system_messages = [
+        SystemMessage(
+            content="""
+                Only respond in JSON with the format below. Do not respond any other way.
+                {
+                    "thoughts": {
+                        "text": "thought",
+                        "reasoning": "reasoning",
+                        "plan": "- short bulleted\n- list that conveys\n- long-term plan",
+                        "criticism": "constructive self-criticism",
+                        "speak": "thoughts summary to say to user",
+                    },
+                    "command": {"name": "command name", "args": {"arg name": "value"}},
+                }
+
+                Make it so your replies can be process by Python's json.load method
+            """
+        ),
         SystemMessage(
             content="""
                 You are Linus a professional operating systems programmer who has knowledge of C++, NASM, C, Python and Perl.
@@ -34,57 +54,47 @@ def main():
                     Finished: "finish" Args: "reason": "<string>"
             """
         ),
-        SystemMessage(
-            content="""
-                You should only respond in JSON format as described below 
-                Response Format: 
-                {
-                    "thoughts": {
-                        "text": "thought",
-                        "reasoning": "reasoning",
-                        "plan": "- short bulleted\n- list that conveys\n- long-term plan",
-                        "criticism": "constructive self-criticism",
-                        "speak": "thoughts summary to say to user",
-                    },
-                    "command": {"name": "command name", "args": {"arg name": "value"}},
-                }
-            """
+        HumanMessage(
+            content="GOAL: Create an API using C++ that will be an interface to the Mistral LLM via ollama API."
         )
     ]
 
-    messages.append(
-        HumanMessage(
-            content="GOAL: Create an AI based OS using C++ and the mistral 7B LLM multi-model model. Begin with creating the boot loader and a new type of kernel where the system is the LLM model. The interface with the LLM in the system portion of the kernel decides and manages system processes and users."
-        )
-    )
+    chat_history += system_messages
 
     print("\n*** Linus ****\n")
-    chat_model_response = chat_model(messages)
+    chat_model_response = chat_model(chat_history)
     print("\n")
 
     chat_model_response.content = combine_chat_content(chat_model_response.content)
 
     try:
         chatjson = json.loads(chat_model_response.content)
-        print(f"chatjson: {chatjson}")
+        print("json cleared")
+        # print(f"chatjson: {chatjson}")
     except json.JSONDecodeError:
+        print("json failed")
+        # add the message about reply format to remind the AI
+        chat_history.append(f"Please take a breath. You are replying in the wrong format. {system_messages[0]}")
         pass
 
     while True:
-        messages.append(
+        chat_history.append(
             AIMessage(content=f"{chat_model_response.content}")
         )
 
         print("\n\n*** Linus ****\n")
-        chat_model_response = chat_model(messages)
+        chat_model_response = chat_model(chat_history)
         print("\n")
 
         chat_model_response.content = combine_chat_content(chat_model_response.content)
 
         try:
             chatjson = json.loads(chat_model_response.content)
-            print(f"chatjson: {chatjson}")
+            print("json passed")
+            # print(f"chatjson: {chatjson}")
         except json.JSONDecodeError:
+            print("json failed")
+            chat_history.append(f"Please take a breath. You are replying in the wrong format. {system_messages[0]}")
             pass
 
 

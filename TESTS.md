@@ -23,6 +23,7 @@ You should only respond in JSON format as described below
 ```
 
 ## LLM Agent - 5 iterations
+### temp 0.7
 ```
 *** Linus ****
 
@@ -43,8 +44,6 @@ You should only respond in JSON format as described below
 "args": {}
 }
 }
-
-chatjson: {'thoughts': {'text': "To create an AI-based OS using C++ and Mistral 7B LLM model, I'll start by designing a boot loader and a new type of kernel where the system is managed by the LLM model. The interface with the LLM in the system portion of the kernel will decide and manage system processes and users.", 'reasoning': "First, we need to design a boot loader that loads the C++ program and initializes the necessary hardware components. Then, we'll develop a new type of kernel where the system is managed by the Mistral 7B LLM model. This will involve creating an interface between the LLM and the kernel that can handle system calls and manage processes and users.", 'plan': ['- Design and implement the boot loader in C++', '- Create a new type of kernel where the LLM model manages the system', '- Develop an interface between the LLM and the kernel for handling system calls and managing processes and users'], 'criticism': 'I should be more specific about the hardware components that need to be initialized by the boot loader and consider error handling mechanisms in case of initialization failures.', 'speak': "Let's get started by designing the boot loader in C++. We'll then move on to creating a new type of kernel where the Mistral 7B LLM model manages the system."}, 'command': {'name': 'design_bootloader', 'args': {}}}
 
 
 *** Linus ****
