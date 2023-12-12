@@ -17,7 +17,7 @@ def main():
     chat_model = ChatOllama(
         model="mistral",
         callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
-        temperature=0.3
+        temperature=0
     )
 
     chat_history = []
